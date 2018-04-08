@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sample PDF Export</title>
+  <link type="text/css" rel="stylesheet" href="css/kendo.common-material.min.css"/>
+  <link type="text/css" rel="stylesheet" href="css/kendo.material.min.css"/>
+  <link type="text/css" rel="stylesheet" href="css/pdf-export-styles.css"/>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="js/kendo.all.min.js"></script>
+
+</head>
+<body>
+
+<div id="example">
+  <textarea id="editor" rows="10" cols="30" style="height:440px"></textarea>
+  <script src="js/pako_deflate.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      const jqEditor = $('#editor');
+      jqEditor.kendoEditor({
+        tools: [
+          {
+            name: "customTemplate",
+            exec: function(e) {
+              const val = editor.value();
+              const forExport = val.replace(/&nbsp;/ig, '<span class="tab"></span>');
+              console.log(forExport);
+              editor.value(forExport);
+              editor.saveAsPDF();
+
+              setTimeout(()=> {editor.value(val);}, 1000);
+
+              },
+            template: '<a tabindex="0" role="button" class="k-tool k-group-start k-group-end my-btn" unselectable="on" title="Custom Export PDF"><span unselectable="on" class="k-tool-icon k-icon k-i-pdfa"></span><span class="k-tool-text">Custom Export PDF</span></a>'
+          },
+          //'pdf',
+          'formatting',
+          'bold',
+          'italic',
+          'underline',
+          'strikethrough',
+          'justifyLeft',
+          'justifyCenter',
+          'justifyRight',
+          'justifyFull',
+          'insertUnorderedList',
+          'insertOrderedList',
+          'indent',
+          'outdent',
+          'createLink',
+          'unlink',
+          'insertImage',
+          'insertFile',
+          'subscript',
+          'superscript',
+          /*
+          'tableWizard',
+          'createTable',
+          'addRowAbove',
+          'addRowBelow',
+          'addColumnLeft',
+          'addColumnRight',
+          'deleteRow',
+          'deleteColumn',
+          'viewHtml',
+
+          'cleanFormatting',
+          'fontName',
+          'fontSize',
+          'foreColor',
+          'backColor',*/
+          'print',
+        ],
+        stylesheets: ['css/pdf-export-styles.css'],
+        pdf: {
+          fileName: 'NewDocument.pdf',
+          paperSize: 'legal',
+          margin: {
+            bottom: 20,
+            left: 20,
+            right: 20,
+            top: 20
+          }
+        }
+      });
+
+      const editor = jqEditor.data('kendoEditor');
+
+      $.ajax({
+        url: 'sample.data'
+      }).done((r) => {
+        editor.value(r);
+      });
+    });
+  </script>
+</div>
+
+</body>
+</html>
